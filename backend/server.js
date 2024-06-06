@@ -14,7 +14,7 @@ const userRoutes = require('./routes/users');
 app.use('/api/users', userRoutes);
 
 
-mongoose.connect('mongodb://localhost:27017/mydatabase', {
+mongoose.connect('mongodb+srv://nicknc410:"password"@jumpster.sm92bkw.mongodb.net/?retryWrites=true&w=majority&appName=Jumpster', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
