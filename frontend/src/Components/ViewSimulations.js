@@ -10,8 +10,7 @@ export default function ViewSimulations() {
         xhr.open('GET', 'http://localhost:3000/api/simulations');
         xhr.onload = function() {
         if (xhr.status === 200) {
-            console.log("Data loaded successfully");
-            
+            console.log("Data loaded successfully");   
             setData(JSON.parse(xhr.responseText));
         }
         };

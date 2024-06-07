@@ -1,7 +1,6 @@
 const express = require('express');
 const Simulations = require('../models/Simulations');
 const router = express.Router();
-const fetch = require('node-fetch');
 const fs = require('fs');
 
 router.get('/', async (req, res) => {
@@ -17,8 +16,11 @@ router.post('/', async (req, res) => {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json', // Example of specifying content type
-                'Authorization': 'Bearer your_access_token' // Example of including an authorization token
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                'Connection': 'keep-alive',
+                'Content-Type': 'application/json'
             }
         });
 
@@ -38,7 +40,8 @@ router.post('/', async (req, res) => {
         const newSimulation = new Simulations({
             ...req.body,
             tiffData: tiffData
-        });
+        }); 
+        
         await newSimulation.save();
     } catch (error) {
         console.error('Error:', error);

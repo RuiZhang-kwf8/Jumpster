@@ -3,7 +3,6 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -11,8 +10,6 @@ app.use(cors());
 app.use(express.json());
 
 // backend/server.js
-
-
 
 mongoose.connect(`${process.env.DB_LINK}`, {
     useNewUrlParser: true,
@@ -22,8 +19,8 @@ mongoose.connect(`${process.env.DB_LINK}`, {
 }).catch(err => {
     console.error('Failed to connect to MongoDB', err);
 });
+const simulationRoutes = require('./routes/Simulations.js');
 
-const simulationRoutes = require('./routes/Simulations');
 app.use('/api/simulations', simulationRoutes);
 
 app.get('/', (req, res) => {
