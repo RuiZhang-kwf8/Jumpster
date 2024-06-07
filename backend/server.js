@@ -1,4 +1,5 @@
 // backend/server.js
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -14,7 +15,7 @@ const userRoutes = require('./routes/users');
 app.use('/api/users', userRoutes);
 
 
-mongoose.connect('mongodb+srv://nicknc410:"password"@jumpster.sm92bkw.mongodb.net/?retryWrites=true&w=majority&appName=Jumpster', {
+mongoose.connect(`${process.env.DB_LINK}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
