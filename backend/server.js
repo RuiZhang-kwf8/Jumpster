@@ -11,8 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 // backend/server.js
-const userRoutes = require('./routes/users');
-app.use('/api/users', userRoutes);
+
 
 
 mongoose.connect(`${process.env.DB_LINK}`, {
@@ -23,6 +22,12 @@ mongoose.connect(`${process.env.DB_LINK}`, {
 }).catch(err => {
     console.error('Failed to connect to MongoDB', err);
 });
+
+const userRoutes = require('./routes/users');
+app.use('/api/users', userRoutes);
+
+const simulationRoutes = require('./routes/Simulations');
+app.use('/api/simulations', simulationRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
