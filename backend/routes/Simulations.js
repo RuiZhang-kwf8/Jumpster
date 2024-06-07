@@ -1,7 +1,6 @@
 const express = require('express');
 const Simulations = require('../models/Simulations');
 const router = express.Router();
-const fetch = require('node-fetch');
 const fs = require('fs');
 
 router.get('/', async (req, res) => {
