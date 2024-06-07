@@ -23,9 +23,6 @@ mongoose.connect(`${process.env.DB_LINK}`, {
     console.error('Failed to connect to MongoDB', err);
 });
 
-const userRoutes = require('./routes/users');
-app.use('/api/users', userRoutes);
-
 const simulationRoutes = require('./routes/Simulations');
 app.use('/api/simulations', simulationRoutes);
 

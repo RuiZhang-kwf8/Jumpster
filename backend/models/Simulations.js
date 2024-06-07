@@ -4,7 +4,8 @@ const SimulationSchema = new Mongoose.Schema({
     id: { type: Number, unique: true, required: true, default: 1 },
     latitude: Number,
     longitude: Number,
-    time: { type: Date, default: Date.now }
+    time: { type: Date, default: Date.now },
+    tiffdata: { type: String }
 }, { timestamps: true });
 
 //auto increment id
