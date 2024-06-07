@@ -8,6 +8,8 @@ import {
 } from "react-router-dom";
 import Home from "./Components/Home";
 import CreateSimulation from "./Components/CreateSimulation";
+import ViewSimulations from "./Components/ViewSimulations";
+
 import "./App.css";
 
 
@@ -23,8 +25,12 @@ class App extends Component {
                           element={<Home />}
                       ></Route>
                       <Route
-                          path="/simulation"
+                          path="/create-simulation"
                           element={<CreateSimulation />}
+                      ></Route>
+                      <Route
+                          path = "/view-simulations"
+                          element={<ViewSimulations />}
                       ></Route>
                   </Routes>
           </Router>
