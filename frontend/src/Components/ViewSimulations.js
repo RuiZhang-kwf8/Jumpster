@@ -1,6 +1,7 @@
 import React from 'react';
 import Home from './Home';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function ViewSimulations() {
     const [data, setData] = useState(null);
@@ -20,7 +21,8 @@ export default function ViewSimulations() {
     return (
       <section>
         <h1>ViewSimulations</h1>
-        <button onClick={handleClick}>Load Data</button>
+        <button onClick={handleClick}>Load Data</button> 
+        <Link to="/">Home</Link>
         <pre>{JSON.stringify(data, null, 2)}</pre>
       </section>
     );
