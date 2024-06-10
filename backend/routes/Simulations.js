@@ -57,9 +57,6 @@ router.post('/', async (req, res) => {
         });
         
 
-            method: 'GET'
-        });
-
         if (!response.ok) {
             const errorText = await response.text();
             throw new Error(`API request failed with status ${response.status}: ${errorText}`);
@@ -92,9 +89,10 @@ router.post('/', async (req, res) => {
 
         console.log("request completed");
 
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+}
+catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+}
 });
 module.exports = router;
