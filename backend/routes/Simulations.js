@@ -11,7 +11,12 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
+<<<<<<< HEAD
         const url = `https://portal.opentopography.org/API/globaldem?demtype=SRTMGL1&south=${req.body.latitude}&north=${req.body.latitude + 0.1}&west=${req.body.longitude}&east=${req.body.longitude + 0.25}&outputFormat=GTiff&API_Key=221b3a8f1a87c610caa4305b50dfea5d`; 
+=======
+       
+        const url = 'https://portal.opentopography.org/API/globaldem?demtype=SRTMGL1&south=${req.body.latitude}&north=${req.body.latitude + 0.1}&west=${req.body.longitude}&east=${req.body.longitude + 0.25}&outputFormat=GTiff&API_Key=221b3a8f1a87c610caa4305b50dfea5d'; 
+>>>>>>> 65668d6a4e3f38b57aacb27e55d76b09d426f60f
         // Fetch data from OpenTopography API
         const response = await fetch(url, {
             method: 'GET',
