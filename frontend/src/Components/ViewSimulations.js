@@ -9,10 +9,10 @@ export default function ViewSimulations() {
 
     function handleClick() {
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:3000/api/simulations');
+        xhr.open('GET', 'http://localhost:5000/api/simulations');
         xhr.onload = function() {
         if (xhr.status === 200) {
-            console.log("Data loaded successfully");   
+            console.log("Data loaded successfully");  
             setData(JSON.parse(xhr.responseText));
         }
         };
