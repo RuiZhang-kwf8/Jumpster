@@ -17,18 +17,12 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        console.log(req.body); 
-        const { latitude, longitude, name } = req.body;
-        const url = `https://portal.opentopography.org/API/globaldem?demtype=SRTMGL1&south=${latitude}&north=${latitude + 0.1}&west=${longitude}&east=${longitude + 0.25}&outputFormat=GTiff&API_Key=221b3a8f1a87c610caa4305b50dfea5d`; 
-
         const fetch = (await import('node-fetch')).default;
         const path = (await import('path')).default;
-        console.log(req.body);
         const url = `https://portal.opentopography.org/API/globaldem?demtype=SRTMGL1&south=${Number(req.body.latitude)}&north=${Number(req.body.latitude) + 0.01}&west=${Number(req.body.longitude)}&east=${Number(req.body.longitude + 0.01)}&outputFormat=GTiff&API_Key=221b3a8f1a87c610caa4305b50dfea5d`; 
         // Fetch data from OpenTopography API
         
         const response = await fetch(url, {
-
             method: 'GET',
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
@@ -47,10 +41,6 @@ router.post('/', async (req, res) => {
             alert('Good!');
         }
         
-        // Assuming response is a stream
-        const dest = fs.createWriteStream('output.tif');
-        response.body.pipe(dest);
-
         // Respond to the client
         res.json({ message: 'File saved successfully' });
         const tiffData = fs.readFileSync('output.tif', { encoding: 'base64' });
