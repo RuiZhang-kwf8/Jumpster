@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
 
         const path = (await import('path')).default;
 
-        const command2 = `cd ~/Downloads/build/src/fetch_dem`;        
+        const command2 = `cd ~/Downloads/build/src/fetch_dem && ./fetch_dem --bbox ${req.body.longitude} ${req.body.latitude} 0.01 0.01 --src gmted output.tif`;        
 
         exec(command2, (error, stdout, stderr) => {
             if (error) {
@@ -36,21 +36,7 @@ router.post('/', async (req, res) => {
         }); 
         console.log("all good"); 
 
-        const command1 = `./fetch_dem --bbox ${req.body.longitude} ${req.body.latitude} 0.01 0.01 --src gmted output.tif`;        
 
-        exec(command1, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Error: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.error(`stderr: ${stderr}`);
-                return;
-            }
-            console.log(`stdout: ${stdout}`);
-        }); 
-        // Fetch data from OpenTopography API
-        console.log("first finished"); 
         const command = `WindNinja_cli ./exampleElevfile.cfg --elevation_file output.tif --output_path ./routes`;        
         exec(command, (error, stdout, stderr) => {
             if (error) {
