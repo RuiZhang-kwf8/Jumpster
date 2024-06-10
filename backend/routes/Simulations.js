@@ -22,29 +22,19 @@ router.post('/', async (req, res) => {
         // Fetch data from OpenTopography API
         
         const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-                'Accept-Language': 'en-US,en;q=0.9',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                'Connection': 'Keep-Alive',
-                'Content-Type': 'application/octet-stream'
-            }
+            method: 'GET'
         });
 
         if (!response.ok) {
-            alert('Failed to fetch data from OpenTopography API');
+            console.log('Error:', response.statusText);
         }
 
-        if (response.ok) {
-            alert('Good!');
-        }
         
         // Respond to the client
         res.json({ message: 'File saved successfully' });
         const tiffData = fs.readFileSync('output.tif', { encoding: 'base64' });
-        const command = 'WindNinja_cli ~/Downloads/windninja/data/bigbutte_test_nodust.cfg';
-        exec(command, (error, stdout, stderr) => {
+        const command = 'WindNinja_cli ./routes/exampleElevfile.cfg';
+        await exec(command, (error, stdout, stderr) => {
             if (error) {
                 console.error(`Error: ${error.message}`);
                 return;
