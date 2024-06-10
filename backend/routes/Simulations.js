@@ -7,34 +7,21 @@ const { exec } = require('child_process');
 
 
 router.get('/', async (req, res) => {
-<<<<<<< HEAD
-=======
-    console.log("request received");
-    const simulations = await Simulations.find().select({ name: 1, latitude: 1, longitude: 1 });
-    console.log(simulations);
->>>>>>> bec332484b47534e03344c50fd0b45b3ff200e8d
 
-    const simulations = await Simulations.find();
-    
+    const simulations = await Simulations.find().select({ name: 1, latitude: 1, longitude: 1 });
+
+
     res.json(simulations);
 });
 
 router.post('/', async (req, res) => {
     try {
-<<<<<<< HEAD
-        console.log(req.body); 
-        const { latitude, longitude, name } = req.body;
-        const url = `https://portal.opentopography.org/API/globaldem?demtype=SRTMGL1&south=${latitude}&north=${latitude + 0.1}&west=${longitude}&east=${longitude + 0.25}&outputFormat=GTiff&API_Key=221b3a8f1a87c610caa4305b50dfea5d`; 
-=======
         const fetch = (await import('node-fetch')).default;
         const path = (await import('path')).default;
-        console.log(req.body);
         const url = `https://portal.opentopography.org/API/globaldem?demtype=SRTMGL1&south=${Number(req.body.latitude)}&north=${Number(req.body.latitude) + 0.01}&west=${Number(req.body.longitude)}&east=${Number(req.body.longitude + 0.01)}&outputFormat=GTiff&API_Key=221b3a8f1a87c610caa4305b50dfea5d`; 
->>>>>>> bec332484b47534e03344c50fd0b45b3ff200e8d
         // Fetch data from OpenTopography API
         
         const response = await fetch(url, {
-<<<<<<< HEAD
             method: 'GET',
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
@@ -53,10 +40,6 @@ router.post('/', async (req, res) => {
             alert('Good!');
         }
         
-        // Assuming response is a stream
-        const dest = fs.createWriteStream('output.tif');
-        response.body.pipe(dest);
-
         // Respond to the client
         res.json({ message: 'File saved successfully' });
         const tiffData = fs.readFileSync('output.tif', { encoding: 'base64' });
@@ -73,9 +56,6 @@ router.post('/', async (req, res) => {
             console.log(`stdout: ${stdout}`);
         });
         
-=======
-            method: 'GET'
-        });
 
         if (!response.ok) {
             const errorText = await response.text();
@@ -97,8 +77,6 @@ router.post('/', async (req, res) => {
         console.log(`Data saved to ${outputFilePath}`);
 
 
-
->>>>>>> bec332484b47534e03344c50fd0b45b3ff200e8d
         // Save simulation data to database if needed
         const newSimulation = new Simulations({
             name: req.body.name,
@@ -107,14 +85,14 @@ router.post('/', async (req, res) => {
         }); 
         
         await newSimulation.save();
-<<<<<<< HEAD
 
-=======
+
         console.log("request completed");
->>>>>>> bec332484b47534e03344c50fd0b45b3ff200e8d
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+
+}
+catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+}
 });
 module.exports = router;
