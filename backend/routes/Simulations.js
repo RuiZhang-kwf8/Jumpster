@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
         console.log("all good"); 
 
 
-        const command = `WindNinja_cli ./exampleElevfile.cfg --elevation_file output.tif --output_path ./routes`;        
+        const command = `WindNinja_cli ./exampleElevfile.cfg --elevation_file ~/Downloads/build/src/fetch_dem/output.tif --output_path ./routes`;        
         exec(command, (error, stdout, stderr) => {
             if (error) {
                 console.error(`Error: ${error.message}`);
