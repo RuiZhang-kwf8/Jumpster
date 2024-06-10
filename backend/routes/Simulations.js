@@ -8,9 +8,8 @@ const { exec } = require('child_process');
 
 router.get('/', async (req, res) => {
 
-    console.log("request received");
     const simulations = await Simulations.find().select({ name: 1, latitude: 1, longitude: 1 });
-    console.log(simulations);
+
 
     res.json(simulations);
 });
