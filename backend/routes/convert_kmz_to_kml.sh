@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+# Convert kmz to kml
+# @ffflorian, 2017
+
+# Exit on error
+set -eu
+
+# Check if 7z is available
+if ! command -v "7z" > /dev/null; then
+  echo >&2 "Could not find 7z. Exiting."
+  exit 1
+fi
+
+# Function to convert kmz to kml
+convert_kmz_to_kml() {
+  for FILE in *.kmz; do
+    if [ -e "$FILE" ]; then
+      if 7z t "$FILE" > /dev/null; then
+        7z e -so "$FILE" > "${FILE%.*}.kml"
+        rm "$FILE"
+      else
+        echo "Failed to test $FILE"
+      fi
+    fi
+  done
+}
+
+# Main loop to continually run the script
+while true; do
+  echo "Starting conversion cycle at $(date)"
+  convert_kmz_to_kml
+  echo "Sleeping for 5 minutes"
+  sleep 300 # Sleep for 5 minutes
+done
