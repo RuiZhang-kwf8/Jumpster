@@ -25,10 +25,10 @@ convert_kmz_to_kml() {
   done
 }
 
-# Main loop to continually run the script
-while true; do
-  echo "Starting conversion cycle at $(date)"
+# Initial conversion of existing KMZ files
+convert_kmz_to_kml
+
+# Monitor the directory for new KMZ files
+while inotifywait -e create -e moved_to .; do
   convert_kmz_to_kml
-  echo "Sleeping for 5 minutes"
-  sleep 300 # Sleep for 5 minutes
 done
