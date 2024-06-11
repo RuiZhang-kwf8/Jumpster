@@ -4,6 +4,9 @@ const router = express.Router();
 const fs = require('fs');
 const { exec } = require('child_process');
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
 
 router.get('/', async (req, res) => {
@@ -14,6 +17,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
+
         const fetch = (await import('node-fetch')).default;
 
         const path = (await import('path')).default;
@@ -35,9 +39,9 @@ router.post('/', async (req, res) => {
             console.log(`stdout: ${stdout}`);
         }); 
         console.log("all good"); 
-
-
-        const command = `WindNinja_cli ./exampleElevfile.cfg --elevation_file ~/Downloads/build/src/fetch_dem/output.tif --output_path ./routes`;        
+        await sleep(1000);
+        
+        const command = `WindNinja_cli ~/Music/Jumpster/backend/routes/exampleElevfile.cfg --elevation_file ~/Downloads/build/src/fetch_dem/output.tif --output_path ~/Music/Jumpster/backend/routes`;        
         exec(command, (error, stdout, stderr) => {
             if (error) {
                 console.error(`Error: ${error.message}`);
