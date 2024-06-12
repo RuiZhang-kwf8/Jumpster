@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 
 export default function Home() {
   return (
-    <section>
-      <h1>Welcome home!</h1>
+    <div className='homeContainer'>
+      <h1>Jumpster Home Page</h1>
       <img src={logo} class="titl" alt="logo" />
       <Link to="/view-simulations">View Simulations</Link>
       <Link to="/create-simulation">Create Simulation</Link>
-    </section>
+    </div>
   );
 }

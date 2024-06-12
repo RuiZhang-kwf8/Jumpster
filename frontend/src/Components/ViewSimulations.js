@@ -3,6 +3,7 @@ import Home from './Home';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import MapView from './MapView';
+import './ViewSimulations.css';
 
 export default function ViewSimulations() {
     const [data, setData] = useState([]);
@@ -34,9 +35,11 @@ export default function ViewSimulations() {
     }
 
     return (
-      <section>
+      <div className='viewSimulationsContainer'>
         <h1>ViewSimulations</h1>
         <button onClick={handleClick}>Load Data</button> 
+        <MapView message={"hi"} number={2} />
+
         <Link to="/">Home</Link>
         <pre>
           {data.length && data.map((item) => (
@@ -48,8 +51,8 @@ export default function ViewSimulations() {
           </li>
         ))}
         </pre>
-        <MapView message={"hi"} number={2} />
+        
 
-      </section>
+      </div>
     );
   }

@@ -6,8 +6,8 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
-
-
+import { Link } from 'react-router-dom';
+import './CreateSimulation.css';
 
 
 export default function CreateSimulation() {
@@ -51,33 +51,35 @@ export default function CreateSimulation() {
   };
 
   return (
-    <section>
+    <div className = "createSimulationContainer">
       <h1>Input simulation information below</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className = "createSimulationForm">
         <label>
           Name:
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} className = "nameInput"/>
         </label>
         <label>
           Latitude:
-          <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} />
+          <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} className = "LlatitudeInput"/>
         </label>
         <label>
           Longitude:
-          <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} />
+          <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} className = "longitudeInput"/>
         </label>
 
-        <button type="submit">Submit</button>
+        
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DesktopDateTimePicker
             label="Date & Time"
             value={time}
             onChange={(newValue) => setTime(newValue)}
             renderInput={(params) => <input {...params} />}
+            className = "dateTimeInput"
           />
         </LocalizationProvider>
-
+        <button type="submit" className = "submitButton">Submit</button>
       </form>
-    </section>
+      <Link to="/">Home</Link>
+    </div>
   );
 }
