@@ -18,8 +18,6 @@ convert_kmz_to_kml() {
       if 7z t "$FILE" > /dev/null; then
         7z e -so "$FILE" > "${FILE%.*}.kml"
         echo "${FILE##*/}"  # Output just the filename without the path
-        mv "$FILE" ../kmls 
-        rm "$FILE"
       else
         echo "Failed to test $FILE"
       fi
