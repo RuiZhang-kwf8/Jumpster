@@ -72,19 +72,32 @@ router.post('/', async (req, res) => {
             console.log(`stdout: ${stdout}`);
             output = stdout.trim(); 
         });
+
+        
+        await sleep(10000);
+        const command4 = `cd ~/Music/Jumpster/backend/outputs && . ./movekmltopublic.sh`; 
+        exec(command3, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.error(`stderr: ${stderr}`);
+                return;
+            }
+            console.log(`stdout: ${stdout}`);
+            output = stdout.trim(); 
+        });
+
         
         // Save simulation data to database if needed
         const newSimulation = new Simulations({
             name: req.body.name,
             latitude: req.body.latitude,
             longitude: req.body.longitude,
-<<<<<<< HEAD
-            time: new Date(req.body.time)
-        }); 
-=======
+            time: new Date(req.body.time),
             outputFileName: output
         });
->>>>>>> 27ec0f160b00a0f37a83db2b5c97539f23be45a2
         
         await newSimulation.save();
 
