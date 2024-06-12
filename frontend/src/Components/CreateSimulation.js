@@ -2,12 +2,20 @@ import React from 'react';
 import Home from './Home';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
+
+
 
 
 export default function CreateSimulation() {
   const [name, setName] = React.useState('');
   const [latitude, setLatitude] = React.useState('');
   const [longitude, setLongitude] = React.useState('');
+  const [time, setTime] = React.useState(dayjs());
+
   const navigate = useNavigate(); 
   
 
@@ -17,10 +25,10 @@ export default function CreateSimulation() {
 
     const simulationData = {
       
-        "name" : name,
-        "latitude": latitude,
-        "longitude": longitude
-    
+      name: name,
+      latitude: latitude,
+      longitude: longitude,
+      time: time.format(), // Convert to ISO string format
     };
     console.log(simulationData);
     try {
@@ -58,7 +66,17 @@ export default function CreateSimulation() {
           Longitude:
           <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} />
         </label>
+
         <button type="submit">Submit</button>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DesktopDateTimePicker
+            label="Date & Time"
+            value={time}
+            onChange={(newValue) => setTime(newValue)}
+            renderInput={(params) => <input {...params} />}
+          />
+        </LocalizationProvider>
+
       </form>
     </section>
   );
