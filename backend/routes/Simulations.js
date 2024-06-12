@@ -56,13 +56,31 @@ router.post('/', async (req, res) => {
             }
             console.log(`stdout: ${stdout}`);
         });
-    
+
+        await sleep(100);
+
+        const output = '';
+        const command3 = `cd ../outputs && source ./convert_kmz_to_kml.sh`;        
+        exec(command3, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.error(`stderr: ${stderr}`);
+                return;
+            }
+            console.log(`stdout: ${stdout}`);
+            output = stdout.trim(); 
+        });
+        
         // Save simulation data to database if needed
         const newSimulation = new Simulations({
             name: req.body.name,
             latitude: req.body.latitude,
-            longitude: req.body.longitude
-        }); 
+            longitude: req.body.longitude,
+            outputFileName: output
+        });
         
         await newSimulation.save();
 
