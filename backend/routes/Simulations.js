@@ -26,7 +26,6 @@ router.post('/', async (req, res) => {
         const eastbound = Number(req.body.longitude) + .01;
         const westbound = Number(req.body.longitude) - .01;
         const command2 = `cd ~/Firelab/Windninja/build/src/fetch_dem && ./fetch_dem --bbox ${northbound} ${eastbound} ${southbound} ${westbound} --src gmted output.tif`;        
-
         exec(command2, (error, stdout, stderr) => {
             if (error) {
                 console.log("all bad"); 
@@ -44,7 +43,7 @@ router.post('/', async (req, res) => {
         console.log("all good"); 
         await sleep(1000);
         
-        const command = `WindNinja_cli ~/Jumpster/Jumpster/backend/routes/exampleElevfile.cfg --elevation_file ~/Firelab/Windninja/build/src/fetch_dem/output.tif --output_path ~/Jumpster/Jumpster/backend/routes`;        
+        const command = `WindNinja_cli ~/Jumpster/Jumpster/backend/routes/exampleElevfile.cfg --elevation_file ~/Firelab/Windninja/build/src/fetch_dem/output.tif --output_path ~/Jumpster/Jumpster/backend/outputs`;        
         exec(command, (error, stdout, stderr) => {
             if (error) {
                 console.error(`Error: ${error.message}`);
@@ -61,7 +60,8 @@ router.post('/', async (req, res) => {
         const newSimulation = new Simulations({
             name: req.body.name,
             latitude: req.body.latitude,
-            longitude: req.body.longitude
+            longitude: req.body.longitude,
+            time: new Date(req.body.time)
         }); 
         
         await newSimulation.save();
