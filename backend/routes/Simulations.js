@@ -21,8 +21,11 @@ router.post('/', async (req, res) => {
         const fetch = (await import('node-fetch')).default;
 
         const path = (await import('path')).default;
-
-        const command2 = `cd ~/Downloads/build/src/fetch_dem && ./fetch_dem --bbox ${req.body.longitude} ${req.body.latitude} 0.01 0.01 --src gmted output.tif`;        
+        const northbound = Number(req.body.latitude) + .01;
+        const southbound = Number(req.body.latitude) - .01;
+        const eastbound = Number(req.body.longitude) + .01;
+        const westbound = Number(req.body.longitude) - .01;
+        const command2 = `cd ~/Firelab/Windninja/build/src/fetch_dem && ./fetch_dem --bbox ${northbound} ${eastbound} ${southbound} ${westbound} --src gmted output.tif`;        
 
         exec(command2, (error, stdout, stderr) => {
             if (error) {
@@ -41,7 +44,7 @@ router.post('/', async (req, res) => {
         console.log("all good"); 
         await sleep(1000);
         
-        const command = `WindNinja_cli ~/Music/Jumpster/backend/routes/exampleElevfile.cfg --elevation_file ~/Downloads/build/src/fetch_dem/output.tif --output_path ~/Music/Jumpster/backend/routes`;        
+        const command = `WindNinja_cli ~/Jumpster/Jumpster/backend/routes/exampleElevfile.cfg --elevation_file ~/Firelab/Windninja/build/src/fetch_dem/output.tif --output_path ~/Jumpster/Jumpster/backend/routes`;        
         exec(command, (error, stdout, stderr) => {
             if (error) {
                 console.error(`Error: ${error.message}`);
