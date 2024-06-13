@@ -158,9 +158,8 @@ router.post('/', async (req, res) => {
         const kmlFiles = await listKmlFiles(outputDirectory);
         console.log('KML Files:', kmlFiles);
         const kmlFileName="" + kmlFiles[diffInHours];
-        for (const kmlFile of kmlFiles) {
-            await moveFile(path.join(outputDirectory, kmlFile), '../frontend/public/kml');
-        }
+        await moveFile(path.join(outputDirectory, kmlFileName), '../frontend/public/kml');
+    
 
         const pdfFiles = await listPdfFiles(directoryPath);
         console.log('PDF Files:', pdfFiles);
