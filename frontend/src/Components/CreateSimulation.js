@@ -75,6 +75,8 @@ export default function CreateSimulation() {
             onChange={(newValue) => setTime(newValue)}
             renderInput={(params) => <input {...params} />}
             className = "dateTimeInput"
+            minDateTime={dayjs()}       // Current time as the minimum selectable time
+            maxDateTime={dayjs().add(18, 'hour')}
           />
         </LocalizationProvider>
         <button type="submit" className = "submitButton">Submit</button>
