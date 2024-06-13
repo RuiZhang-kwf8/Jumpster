@@ -7,7 +7,7 @@ import './ViewSimulations.css';
 
 export default function ViewSimulations() {
     const [data, setData] = useState([]);
-    const [kml, setKml] = useState("./missoula_valley_0_50_179m.kml");
+    const [kml, setKml] = useState("missoula_valley_0_50_179m.kml");
 
     function handleClick() {
         const xhr = new XMLHttpRequest();
@@ -19,26 +19,27 @@ export default function ViewSimulations() {
         }
         };
         xhr.send();
-        
     }
 
     return (
       <div className='viewSimulationsContainer'>
         <h1>ViewSimulations</h1>
         <button onClick={handleClick}>Load Data</button> 
-        <MapView fileName = {kml}  />
+        
 
         <Link to="/">Home</Link>
         <pre>
           {data.length && data.map((item) => (
           <li key={item.id}>
             
-            <h2>{item.name}</h2><button onClick={setKml(data.outputKmlFileName)}>Load KML</button>
-            
-            
+            <h2>{item.name}</h2>
+            <button onClick={() => {setKml(item.outputKmlFileName);
+            console.log(item);
+            }}>Load KML</button>
           </li>
         ))}
         </pre>
+        <MapView fileName={kml} />
         
 
       </div>

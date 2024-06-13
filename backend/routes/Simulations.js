@@ -103,7 +103,7 @@ function moveFile(filePath, newDirectoryPath) {
 
 
 router.get('/', async (req, res) => {
-    const simulations = await Simulations.find().select({ name: 1, latitude: 1, longitude: 1 });
+    const simulations = await Simulations.find().select({ name: 1, latitude: 1, longitude: 1 , outputKmlFileName: 1, outputPdfFileName: 1});
 
     res.json(simulations);
 });
@@ -114,10 +114,10 @@ router.post('/', async (req, res) => {
         const fetch = (await import('node-fetch')).default;
 
         const path = (await import('path')).default;
-        const northbound = Number(req.body.latitude) + .01;
-        const southbound = Number(req.body.latitude) - .01;
-        const eastbound = Number(req.body.longitude) + .01;
-        const westbound = Number(req.body.longitude) - .01;
+        const northbound = Number(req.body.latitude) + .1;
+        const southbound = Number(req.body.latitude) - .1;
+        const eastbound = Number(req.body.longitude) + .1;
+        const westbound = Number(req.body.longitude) - .1;
 
         const command = `cd ~/Firelab/Windninja/build/src/fetch_dem && ./fetch_dem --bbox ${northbound} ${eastbound} ${southbound} ${westbound} --src gmted output.tif`;      
         console.log("command: ", command); 
