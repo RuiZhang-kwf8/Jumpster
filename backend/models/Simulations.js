@@ -4,7 +4,8 @@ const SimulationSchema = new Mongoose.Schema({
     name: String,
     latitude: Number,
     longitude: Number,
-    outputFileName: String,
+    outputKmlFileName: String,
+    outputPdfFileName: String,
     time: { type: Date, default: Date.now }
 }, { timestamps: true });
 
