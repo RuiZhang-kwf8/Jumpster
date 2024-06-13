@@ -7,6 +7,7 @@ const path = require('path');
 const util = require('util');
 const execPromise = util.promisify(exec);
 const AdmZip = require('adm-zip');
+const dayjs = require('dayjs');
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -114,16 +115,28 @@ router.post('/', async (req, res) => {
         const fetch = (await import('node-fetch')).default;
 
         const path = (await import('path')).default;
-        const northbound = Number(req.body.latitude) + .1;
-        const southbound = Number(req.body.latitude) - .1;
-        const eastbound = Number(req.body.longitude) + .1;
-        const westbound = Number(req.body.longitude) - .1;
+        const northbound = Number(req.body.latitude) + .07;
+        const southbound = Number(req.body.latitude) - .07;
+        const eastbound = Number(req.body.longitude) + .07;
+        const westbound = Number(req.body.longitude) - .07;
 
-        const command = `cd ~/Firelab/Windninja/build/src/fetch_dem && ./fetch_dem --bbox ${northbound} ${eastbound} ${southbound} ${westbound} --src gmted output.tif`;      
+
+
+        
+        const currentTime = new Date();
+
+  // Convert currentTime to a dayjs object
+        const currentDayjsTime = dayjs(currentTime);
+
+        const diffInMilliseconds = currentDayjsTime.diff(req.body.time);
+
+        const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
+
+        const command = `cd ~/Downloads/build/src/fetch_dem && ./fetch_dem --bbox ${northbound} ${eastbound} ${southbound} ${westbound} --src gmted output.tif`;      
         console.log("command: ", command); 
         await execPromise(command);
 
-        const command2 = `WindNinja_cli ~/Jumpster/Jumpster/backend/routes/exampleElevfile.cfg --elevation_file ~/Firelab/Windninja/build/src/fetch_dem/output.tif --output_path ~/Jumpster/Jumpster/backend/outputs`;        
+        const command2 = `WindNinja_cli ~/Music/Jumpster/backend/routes/exampleElevfile.cfg --elevation_file ~/Downloads/build/src/fetch_dem/output.tif --output_path ~/Music/Jumpster/backend/outputs`;        
         console.log("command: ", command2); 
         await execPromise(command2);
 
@@ -144,14 +157,14 @@ router.post('/', async (req, res) => {
 
         const kmlFiles = await listKmlFiles(outputDirectory);
         console.log('KML Files:', kmlFiles);
-        const kmlFileName="" + kmlFiles[0];
+        const kmlFileName="" + kmlFiles[diffInHours];
         for (const kmlFile of kmlFiles) {
             await moveFile(path.join(outputDirectory, kmlFile), '../frontend/public/kml');
         }
 
         const pdfFiles = await listPdfFiles(directoryPath);
         console.log('PDF Files:', pdfFiles);
-        const pdfFileName="" + pdfFiles[0];
+        const pdfFileName="" + pdfFiles[diffInHours];
         for (const pdfFile of pdfFiles) {
             await moveFile(path.join(directoryPath, pdfFile), '../frontend/public/pdf');
         }
@@ -163,7 +176,6 @@ router.post('/', async (req, res) => {
         }
 
 
-        
         // Save simulation data to database if needed
         const newSimulation = new Simulations({
             name: req.body.name,
