@@ -163,7 +163,7 @@ router.post('/', async (req, res) => {
 
         const pdfFiles = await listPdfFiles(directoryPath);
         console.log('PDF Files:', pdfFiles);
-        const pdfFileName="" + pdfFiles[diffInHours];
+        const pdfFileName="" + pdfFiles[Math.abs(diffInHours)];
         for (const pdfFile of pdfFiles) {
             await moveFile(path.join(directoryPath, pdfFile), '../frontend/public/pdf');
         }
