@@ -5,9 +5,6 @@ import ReactLeafletKml from 'react-leaflet-kml';
 import { useEffect, useState } from 'react';
 
 
-  
-  
-
 function MapView(props) {
     const [kml, setKml] = useState(null);
 

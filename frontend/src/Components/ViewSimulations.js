@@ -1,32 +1,40 @@
 import React from 'react';
 import Home from './Home';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import MapView from './MapView';
 
 export default function ViewSimulations() {
-    const [data, setData] = useState(null);
+    const [datas, setData] = useState(null);
+      useEffect(() => {
+        // Define the API endpoint
+        const apiUrl = 'http://localhost:5000/api/simulations';
 
-    function handleClick() {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:5000/api/simulations');
-        xhr.onload = function() {
-        if (xhr.status === 200) {
-            console.log("Data loaded successfully");  
-            setData(JSON.parse(xhr.responseText));
-        }
-        };
-        xhr.send();
-    }
+        // Fetch data from the API
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(datas => {
+                setData(datas);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }, []); //
+    
 
     return (
-      <section>
-        <h1>ViewSimulations</h1>
-        <button onClick={handleClick}>Load Data</button> 
-        <Link to="/">Home</Link>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-        <MapView message={"hi"} number={2} />
-
-      </section>
+      <div>
+            <h1>Simulations</h1>
+            <ul>
+                {datas.map(data => (
+                    <li key={data.name}>
+                        <p>Name: {data.name}</p>
+                        <p>Latitude: {data.latitude}</p>
+                        <p>Longitude: {data.longitude}</p>
+                        <MapView kmltext={data.outputFileName} number={2} />
+                    </li>
+                ))}
+            </ul>
+        </div>
     );
   }
