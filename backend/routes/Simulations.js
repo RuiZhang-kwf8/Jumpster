@@ -25,8 +25,9 @@ router.post('/', async (req, res) => {
         const southbound = Number(req.body.latitude) - .01;
         const eastbound = Number(req.body.longitude) + .01;
         const westbound = Number(req.body.longitude) - .01;
-        const command2 = `cd ~/Firelab/Windninja/build/src/fetch_dem && ./fetch_dem --bbox ${northbound} ${eastbound} ${southbound} ${westbound} --src gmted output.tif`;        
-
+        console.log(northbound, southbound, eastbound, westbound);
+        const name = req.body.name;  
+        const command2 = `cd ~/Downloads/build/src/fetch_dem && ./fetch_dem --bbox ${northbound} ${eastbound} ${southbound} ${westbound} --src gmted output.tif`;        
         exec(command2, (error, stdout, stderr) => {
             if (error) {
                 console.log("all bad"); 
@@ -44,7 +45,7 @@ router.post('/', async (req, res) => {
         console.log("all good"); 
         await sleep(1000);
         
-        const command = `WindNinja_cli ~/Jumpster/Jumpster/backend/routes/exampleElevfile.cfg --elevation_file ~/Firelab/Windninja/build/src/fetch_dem/output.tif --output_path ~/Jumpster/Jumpster/backend/routes`;        
+        const command = `WindNinja_cli ~/Music/Jumpster/backend/routes/exampleElevfile.cfg --elevation_file ~/Downloads/build/src/fetch_dem/output.tif --output_path ~/Music/Jumpster/backend/outputs`;        
         exec(command, (error, stdout, stderr) => {
             if (error) {
                 console.error(`Error: ${error.message}`);
@@ -57,29 +58,32 @@ router.post('/', async (req, res) => {
             console.log(`stdout: ${stdout}`);
         });
 
-        await sleep(100);
+        await sleep(8000);
+        const outputDir = '~/Music/Jumpster/backend/outputs';
 
-        const output = '';
-        const command3 = `cd ../outputs && source ./convert_kmz_to_kml.sh`;        
-        exec(command3, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Error: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.error(`stderr: ${stderr}`);
-                return;
-            }
-            console.log(`stdout: ${stdout}`);
-            output = stdout.trim(); 
+        const command0 = `find . -type f -name "*.kmz" -exec sh -c 'ogr2ogr -f "KML" "${outputDir}/${name}.kml" "{}"' \\;`;
+      
+
+
+        exec(command0, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+          }
+          console.log(`stdout: ${stdout}`);
+          console.error(`stderr: ${stderr}`);
         });
-        
+ 
+ 
+ 
+ 
+
         // Save simulation data to database if needed
         const newSimulation = new Simulations({
             name: req.body.name,
             latitude: req.body.latitude,
             longitude: req.body.longitude,
-            outputFileName: output
+            outputFileName: req.body.name
         });
         
         await newSimulation.save();
