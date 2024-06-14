@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import MapView from './MapView';
 import './ViewSimulations.css';
-import { useLocation } from 'react-router-dom';
 
 
 export default function ViewSimulations() {
@@ -10,9 +9,7 @@ export default function ViewSimulations() {
     const [kml, setKml] = useState("");
     const [latitude, setLatitude] = useState(46.8721);
     const [longitude, setLongitude] = useState(-113.9940);
-    const location = useLocation();
-    const { simulationData } = location.state || {};
-    console.log(simulationData);
+    
 
     function handleClick() {
         const xhr = new XMLHttpRequest();
