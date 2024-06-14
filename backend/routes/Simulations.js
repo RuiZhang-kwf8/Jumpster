@@ -89,7 +89,7 @@ function moveFile(filePath, newDirectoryPath) {
                 return reject(err);
             }
 
-            const fileName = path.basename(filePath);
+            const fileName = req.body.name + req.body.latitude + req.body.longitude;
             const newFilePath = path.join(newDirectoryPath, fileName);
 
             fs.rename(filePath, newFilePath, (err) => {
