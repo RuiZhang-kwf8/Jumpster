@@ -103,7 +103,7 @@ function moveFile(filePath, newDirectoryPath) {
 
 
 router.get('/', async (req, res) => {
-    const simulations = await Simulations.find().select({ name: 1, latitude: 1, longitude: 1 });
+    const simulations = await Simulations.find().select({ name: 1, latitude: 1, longitude: 1 , outputKmlFileName: 1, outputPdfFileName: 1});
 
     res.json(simulations);
 });
@@ -178,9 +178,9 @@ router.post('/', async (req, res) => {
 
 
         console.log("request completed");
+        res.status(200).json({ message: 'Simulation created successfully' });
 
-}
-catch (error) {
+} catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Internal Server Error' });
 }
