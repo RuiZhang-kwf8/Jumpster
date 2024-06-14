@@ -1,33 +1,42 @@
-import React from 'react';
-import { MapContainer , TileLayer } from "react-leaflet";
+import React, { useEffect, useState } from 'react';
+import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import ReactLeafletKml from 'react-leaflet-kml'; 
-import { useEffect, useState } from 'react';
+import ReactLeafletKml from 'react-leaflet-kml';
 
+function MapView({ fileName , latitude, longitude}) {
+    const [kmlData, setKmlData] = useState(null);
 
-  
-  
-
-function MapView(props) {
+    useEffect(() => {
+        console.log(`Fetching KML file: ./kml/${fileName}`);
+        fetch(`./kml/${fileName}`)
+            .then((response) => response.text())
+            .then((text) => {
+                const parser = new DOMParser();
+                const kml = parser.parseFromString(text, 'text/xml');
+                setKmlData(kml);
+                console.log("KML data set", kml);
+            })
+            .catch((error) => {
+                console.error('Error fetching KML file:', error);
+            });
+    }, [fileName]);
 
     return (
         <div>
-            <div>
-                <MapContainer
-                    style={{ height: "500px", width: "100%" }}
-                    zoom={17}
-                    center={[47.0677868126, -113.8838378701]}
-                >
-                    <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            <MapContainer
+                style={{ height: '500px', width: '100%' }}
+                zoom={17}
+                center={[latitude, longitude]}
+            >
+                <TileLayer
+                    url="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoibmlja25jNDEwIiwiYSI6ImNseGF1dGV1bDEzdDMya29pcnFjanQwYWMifQ.TOWeP4Hm_8GbeHQYt-KlUQ"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                    />
-                    {kml && <ReactLeafletKml kml={`./kml/${props.fileName}`} />}
-                </MapContainer>
-            </div>
-            
+                />
+                {kmlData && (
+                    <ReactLeafletKml kml={kmlData} />
+                )}
+            </MapContainer>
         </div>
-        
     );
 }
 
