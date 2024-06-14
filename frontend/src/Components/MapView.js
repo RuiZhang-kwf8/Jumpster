@@ -29,7 +29,7 @@ function MapView({ fileName , latitude, longitude}) {
                 center={[latitude, longitude]}
             >
                 <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    url="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoibmlja25jNDEwIiwiYSI6ImNseGF1dGV1bDEzdDMya29pcnFjanQwYWMifQ.TOWeP4Hm_8GbeHQYt-KlUQ"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
                 {kmlData && (

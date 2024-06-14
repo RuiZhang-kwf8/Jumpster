@@ -178,9 +178,9 @@ router.post('/', async (req, res) => {
 
 
         console.log("request completed");
+        res.status(200).json({ message: 'Simulation created successfully' });
 
-}
-catch (error) {
+} catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Internal Server Error' });
 }

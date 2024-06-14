@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Home from './Home';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 import { Link } from 'react-router-dom';
 import './CreateSimulation.css';
+import LoadingSpinner from './LoadingSpinner';
 
 
 export default function CreateSimulation() {
@@ -15,11 +16,17 @@ export default function CreateSimulation() {
   const [latitude, setLatitude] = React.useState('');
   const [longitude, setLongitude] = React.useState('');
   const [time, setTime] = React.useState(dayjs());
-
+  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const navigate = useNavigate(); 
   
-
+  useEffect(() => {
+    if (loaded) {
+      navigate('/view-simulations');
+    }
+  });
   const handleSubmit = async (e) => {
+    setLoading(true);
     console.log("handleSubmit");
     e.preventDefault();
 
@@ -39,9 +46,12 @@ export default function CreateSimulation() {
         },
         body: JSON.stringify(simulationData)
       });
-      if (response.ok) {
-        alert('Simulation created successfully');
-        navigate('/view-simulations');
+      await setLoading(false);
+
+      if (response.status === 200) {
+        await alert('Simulation created successfully');
+        setLoaded(true);
+        console.log("Simulation created successfully");
       } else {
         alert('Failed to create simulation');
       }
@@ -52,6 +62,7 @@ export default function CreateSimulation() {
 
   return (
     <div className = "createSimulationContainer">
+      {loading && <LoadingSpinner message="Loading Simulation. Please wait this make take a while." />}
       <h1>Input simulation information below</h1>
       <form onSubmit={handleSubmit} className = "createSimulationForm">
         <label>

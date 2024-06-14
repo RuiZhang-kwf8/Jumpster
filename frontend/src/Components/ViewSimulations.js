@@ -5,7 +5,7 @@ import './ViewSimulations.css';
 
 export default function ViewSimulations() {
     const [data, setData] = useState([]);
-    const [kml, setKml] = useState("missoula_valley_0_50_179m.kml");
+    const [kml, setKml] = useState("");
     const [latitude, setLatitude] = useState(46.8721);
     const [longitude, setLongitude] = useState(-113.9940);
 
@@ -20,7 +20,15 @@ export default function ViewSimulations() {
         };
         xhr.send();
     }
-
+    const handleDownload = (fileName) => {
+      const fileUrl = `${process.env.PUBLIC_URL}/pdf/${fileName}`;
+      const a = document.createElement('a');
+      a.href = fileUrl;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    };
     return (
         <div className='viewSimulationsContainer'>
             <h1>ViewSimulations</h1>
@@ -37,6 +45,9 @@ export default function ViewSimulations() {
                             setLongitude(item.longitude);
                             console.log(item);
                         }}>Load KML</button>
+                        <button onClick={() => handleDownload(item.outputPdfFileName)}>
+                            Download PDF
+                        </button>
                     </li>
                 ))}
             </pre>
