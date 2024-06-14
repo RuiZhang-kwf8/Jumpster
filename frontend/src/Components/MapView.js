@@ -79,6 +79,9 @@ function MapView({ fileName, latitude, longitude }) {
           <Marker position={currentLocation}>
             <Popup>
               You are here.
+            
+              Latitude: {currentLocation[0]}<br />
+              Longitude: {currentLocation[1]}
             </Popup>
           </Marker>
         )}
