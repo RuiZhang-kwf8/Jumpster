@@ -132,11 +132,11 @@ router.post('/', async (req, res) => {
 
         const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
 
-        const command = `cd ~/Downloads/build/src/fetch_dem && ./fetch_dem --bbox ${northbound} ${eastbound} ${southbound} ${westbound} --src gmted output.tif`;      
+        const command = `cd ~/Firelab/Windninja/build/src/fetch_dem && ./fetch_dem --bbox ${northbound} ${eastbound} ${southbound} ${westbound} --src gmted output.tif`;      
         console.log("command: ", command); 
         await execPromise(command);
 
-        const command2 = `WindNinja_cli ~/Music/Jumpster/backend/routes/exampleElevfile.cfg --elevation_file ~/Downloads/build/src/fetch_dem/output.tif --output_path ~/Music/Jumpster/backend/outputs`;        
+        const command2 = `WindNinja_cli ~/Jumpster/Jumpster/backend/routes/exampleElevfile.cfg --elevation_file ~/Firelab/Windninja/build/src/fetch_dem/output.tif --output_path ~/Jumpster/Jumpster/backend/outputs`;        
         console.log("command: ", command2); 
         await execPromise(command2);
 
