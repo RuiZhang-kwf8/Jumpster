@@ -11,8 +11,6 @@ export default function ViewSimulations() {
     const [longitude, setLongitude] = useState(-113.9940);
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredData, setFilteredData] = useState([]);
-    const location = useLocation();
-    const { simulationData } = location.state || {};
     console.log(simulationData);
 
     function handleClick() {
