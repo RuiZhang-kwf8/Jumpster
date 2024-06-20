@@ -23,15 +23,14 @@ const CurrentLocationMarker = ({ setCurrentLocation }) => {
           const { latitude, longitude } = position.coords;
           const currentLocation = [latitude, longitude];
           setCurrentLocation(currentLocation);
-          map.setView(currentLocation, map.getZoom());
         },
         (error) => {
           console.error('Error getting location:', error);
-          alert('Error getting location. Please check your permissions.');
+          alert('Error getting location.');
         },
         {
-          enableHighAccuracy: true,
-          timeout: 30000,
+          enableHighAccuracy: false,
+          timeout: 3000000,
           maximumAge: 0,
         }
       );
@@ -48,6 +47,8 @@ function MapView({ fileName, latitude, longitude }) {
   const [currentLocation, setCurrentLocation] = useState([latitude, longitude]);
 
   useEffect(() => {
+    
+    if (fileName) {
     console.log(`Fetching KML file: ./kml/${fileName}`);
     fetch(`./kml/${fileName}`)
       .then((response) => response.text())
@@ -60,6 +61,7 @@ function MapView({ fileName, latitude, longitude }) {
       .catch((error) => {
         console.error('Error fetching KML file:', error);
       });
+    }
   }, [fileName]);
 
   return (

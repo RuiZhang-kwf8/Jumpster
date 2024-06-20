@@ -2,19 +2,34 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import MapView from './MapView';
 import './ViewSimulations.css';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 
-export default function ViewSimulations() {
+export default function ViewSimulations( ) {
     const [data, setData] = useState([]);
     const [kml, setKml] = useState("");
     const [latitude, setLatitude] = useState(46.8721);
     const [longitude, setLongitude] = useState(-113.9940);
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredData, setFilteredData] = useState([]);
-    console.log(simulationData);
+    const location = useLocation();
+    const {name, la, lo} = location.state || {};
+    useEffect(() => {
+        if (name) {
+            setKml(name+la+lo+".kml");
+        }
+        if (la) {
+            setLatitude(la);
+        }
+        if (lo) {
+            setLongitude(lo);
+        }
+    }, [name, la, lo]);
 
     function handleClick() {
         const xhr = new XMLHttpRequest();
+        
         xhr.open('GET', 'http://localhost:5000/api/simulations');
         xhr.onload = function() {
             if (xhr.status === 200) {

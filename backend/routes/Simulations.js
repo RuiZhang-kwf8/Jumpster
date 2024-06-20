@@ -81,7 +81,7 @@ function deleteFile(filePath) {
         });
     });
 }
-function moveFile(filePath, newDirectoryPath) {
+function moveFile(filePath, newName, newDirectoryPath) {
     return new Promise((resolve, reject) => {
         // Ensure the new directory exists
         fs.mkdir(newDirectoryPath, { recursive: true }, (err) => {
@@ -89,7 +89,7 @@ function moveFile(filePath, newDirectoryPath) {
                 return reject(err);
             }
 
-            const fileName = req.body.name + req.body.latitude + req.body.longitude;
+            const fileName = newName;
             const newFilePath = path.join(newDirectoryPath, fileName);
 
             fs.rename(filePath, newFilePath, (err) => {
@@ -111,6 +111,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
+        
         console.log('Current working directory:', process.cwd());
         const fetch = (await import('node-fetch')).default;
 
@@ -158,14 +159,16 @@ router.post('/', async (req, res) => {
         const kmlFiles = await listKmlFiles(outputDirectory);
         console.log('KML Files:', kmlFiles);
         const kmlFileName="" + kmlFiles[Math.abs(diffInHours)];
-        await moveFile(path.join(outputDirectory, kmlFileName), '../frontend/public/kml');
+        const kmlFileNameNew = req.body.name + req.body.latitude + req.body.longitude +".kml";
+        await moveFile(path.join(outputDirectory , kmlFileName), kmlFileNameNew, '../frontend/public/kml');
     
 
         const pdfFiles = await listPdfFiles(directoryPath);
         console.log('PDF Files:', pdfFiles);
         const pdfFileName="" + pdfFiles[Math.abs(diffInHours)];
+        const pdfFileNameNew = req.body.name + req.body.latitude + req.body.longitude +".pdf";
         for (const pdfFile of pdfFiles) {
-            await moveFile(path.join(directoryPath, pdfFile), '../frontend/public/pdf');
+            await moveFile(path.join(directoryPath, pdfFile),pdfFileNameNew, '../frontend/public/pdf');
         }
 
         const allExtraFiles = await listAllFiles(outputDirectory);
@@ -181,8 +184,8 @@ router.post('/', async (req, res) => {
             latitude: req.body.latitude,
             longitude: req.body.longitude,
             time: new Date(req.body.time),
-            outputKmlFileName: kmlFileName,
-            outputPdfFileName: pdfFileName
+            outputKmlFileName: kmlFileNameNew,
+            outputPdfFileName: pdfFileNameNew
         });
         
         await newSimulation.save();
@@ -190,6 +193,8 @@ router.post('/', async (req, res) => {
 
         console.log("request completed");
         res.status(200).json({ message: 'Simulation created successfully' });
+        
+        
 
 } catch (error) {
     console.error('Error:', error);
