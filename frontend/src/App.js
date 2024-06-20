@@ -5,6 +5,7 @@ import {
     Routes,
     Route,
     Link,
+    Navigate
 } from "react-router-dom";
 import Home from "./Components/Home";
 import CreateSimulation from "./Components/CreateSimulation";
