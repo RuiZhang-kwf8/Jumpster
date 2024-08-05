@@ -29,8 +29,8 @@ export default function CreateSimulation() {
     };
     console.log(simulationData);
     const xhr = new XMLHttpRequest();
-    
-    xhr.open("POST", "http://127.0.0.1:5000/api/simulations", true);
+    //https://ninjastorm.firelab.org/jumpster/api/simulations
+    xhr.open("POST", "https://ninjastorm.firelab.org/jumpster/api/simulations", true);
     xhr.timeout = 500000;
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.onload = async () => {
@@ -56,32 +56,40 @@ export default function CreateSimulation() {
       {loading && <LoadingSpinner message="Loading Simulation. Please wait this may take a while." />}
       <h1>Input simulation information below</h1>
       <form className="createSimulationForm">
-        <label>
+        <label className = "createSimLabel">
           Name:
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="nameInput"/>
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="createSimInput"/>
         </label>
-        <label>
-          Latitude:
-          <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} className="latitudeInput"/>
+        <label className = "createSimLabel">
+          <div className = "latLongLabel">
+          Latitude: <span className="exampleLatLong">(ex. 46.948856)</span>
+          </div>
+          
+          
+          <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} className="createSimInput"/>
         </label>
-        <label>
-          Longitude:
-          <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} className="longitudeInput"/>
+        <label className = "createSimLabel">
+          <div className = "latLongLabel">
+          Longitude: <span className="exampleLatLong">(ex. -112.625774)</span>
+          </div>
+          
+          
+          <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} className="createSimInput"/>
         </label>
 
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DesktopDateTimePicker
-            label="Date & Time"
+            label="Date & Time (within 18 hours)"
             value={time}
             onChange={(newValue) => setTime(newValue)}
-            className="dateTimeInput"
+            className="dateTimeInput createSimInput"
             minDateTime={dayjs()}       // Current time as the minimum selectable time
             maxDateTime={dayjs().add(18, 'hour')}
           />
         </LocalizationProvider>
         <button type="submit" onClick={handleSubmit} className="submitButton">Submit</button>
       </form>
-      <Link to="/">Home</Link>
+      <Link to="/" className = "homeLink">Home</Link>
     </div>
   );
 }

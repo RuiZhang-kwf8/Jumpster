@@ -1,0 +1,20 @@
+.legendContainer{
+    display:flex;
+    flex-direction: column;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+.totalContainer{
+    position:relative;
+    height: 100%;
+    width:auto;
+}
+
+@media (max-width: 600px) {
+    .legendContainer{
+        max-width: 25%;
+    }
+}

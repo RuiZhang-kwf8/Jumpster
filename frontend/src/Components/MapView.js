@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import ReactLeafletKml from 'react-leaflet-kml';
 import L from 'leaflet';
+import GeoTiffLayer from "./GeoTiffLayer";
+import './MapView.css';
+import TiffLegend from './TiffLegend';
+// import WorldTiff from "./world.tif";
+// import LidTif from "./LAIRD.tif";
 
 // Fix default icon issues with Leaflet in React
 delete L.Icon.Default.prototype._getIconUrl;
@@ -13,79 +18,86 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-const CurrentLocationMarker = ({ setCurrentLocation }) => {
-  const map = useMap();
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      const watchId = navigator.geolocation.watchPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const currentLocation = [latitude, longitude];
-          setCurrentLocation(currentLocation);
-        },
-        (error) => {
-          console.error('Error getting location:', error);
-          alert('Error getting location.');
-        },
-        {
-          enableHighAccuracy: false,
-          timeout: 3000000,
-          maximumAge: 0,
-        }
-      );
-
-      return () => navigator.geolocation.clearWatch(watchId);
-    }
-  }, [map, setCurrentLocation]);
-
-  return null;
-};
-
-function MapView({ fileName, latitude, longitude }) {
+function MapView({ kmlFileName, kmlLegendFileName, tiffFileName, discrete, latitude, longitude, maxValue, setMaxValue }) {
   const [kmlData, setKmlData] = useState(null);
-  const [currentLocation, setCurrentLocation] = useState([latitude, longitude]);
-
   useEffect(() => {
-    
-    if (fileName) {
-    console.log(`Fetching KML file: ./kml/${fileName}`);
-    fetch(`./kml/${fileName}`)
-      .then((response) => response.text())
-      .then((text) => {
-        const parser = new DOMParser();
-        const kml = parser.parseFromString(text, 'text/xml');
-        setKmlData(kml);
-        console.log("KML data set", kml);
-      })
-      .catch((error) => {
-        console.error('Error fetching KML file:', error);
-      });
+    if (kmlFileName) {
+      fetch(`./kml/${kmlFileName}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.text();
+        })
+        .then((text) => {
+          const parser = new DOMParser();
+          const kml = parser.parseFromString(text, 'text/xml');
+          setKmlData(kml);
+        })
+        .catch((error) => {
+          console.error('Error fetching KML file:', error);
+        });
     }
-  }, [fileName]);
+  }, [kmlFileName]);
+  const interpolateColor = (value, min, max, startColor, endColor) => {
+    
+    var ratio = (value - min) / (max - min);
+    if (discrete){
+      ratio = 0;
+    }
+    const r = Math.round(startColor[0] + ratio * (endColor[0] - startColor[0]));
+    const g = Math.round(startColor[1] + ratio * (endColor[1] - startColor[1]));
+    const b = Math.round(startColor[2] + ratio * (endColor[2] - startColor[2]));
+    return `rgba(${r},${g},${b},1)`;
+  };
+  const getColor = (nir) => {
+    if (nir === 0) return 'rgba(0,0,0,0)'; // Transparent for 0 values
+    const value = nir / maxValue;
+    if (value <= 1/3) {
+      return interpolateColor(value, 0, 1/3, [0, 100, 255], [0, 255, 0]);
+    } else if (value<=2/3) {
+      return interpolateColor(value, 1/3, 2/3, [0, 255, 0], [255, 255, 0]);
+    } else if (value<=1){
+      return interpolateColor(value, 2/3, 1, [255, 255, 0], [255, 0, 255]);
+    }else{
+      return interpolateColor(value, 1, 999999999, [255, 0, 0], [255, 0, 0]);
+    }
+  };
+  
+  const options = {
 
+    pixelValuesToColorFn: (values) => {
+      const nir = values[0];
+      return getColor(nir);
+    },
+    resolution: 64,
+    opacity: .4
+  };
   return (
-    <div>
+    <div className="totalContainer">
       <MapContainer
-        style={{ height: '500px', width: '100%' }}
+        key = {tiffFileName}
+        style={{ height: '100vh', width: '100%', position: "relative" }}
         zoom={17}
-        center={currentLocation}
-      >
+        center={[latitude, longitude]}
+      > 
+        <div className="legendContainer">
+        {kmlLegendFileName && (<img src={`kmlLegend/${kmlLegendFileName}`} alt="legend" className = "legend" />)}
+        {tiffFileName && <TiffLegend discrete={discrete} maxValue= {maxValue} setMaxValue={setMaxValue}/>}
+        </div>
+
+        {kmlData && <ReactLeafletKml kml={kmlData} />}
         <TileLayer
           url="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoibmlja25jNDEwIiwiYSI6ImNseGF1dGV1bDEzdDMya29pcnFjanQwYWMifQ.TOWeP4Hm_8GbeHQYt-KlUQ"
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          
         />
-        {kmlData && <ReactLeafletKml kml={kmlData} />}
-        <CurrentLocationMarker setCurrentLocation={setCurrentLocation} />
-        {currentLocation && (
-          <Marker position={currentLocation}>
-            <Popup>
-              You are here.
-            
-              Latitude: {currentLocation[0]}<br />
-              Longitude: {currentLocation[1]}
-            </Popup>
-          </Marker>
+        {tiffFileName && (
+          <GeoTiffLayer 
+            key={tiffFileName} 
+            url={`tiff/${tiffFileName}`} 
+            options={options} 
+          />
         )}
       </MapContainer>
     </div>

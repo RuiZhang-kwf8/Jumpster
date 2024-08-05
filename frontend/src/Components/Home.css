@@ -1,21 +1,28 @@
 .homeContainer {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  align-items: top;
   text-align: center;
-  padding: 20px;
+  width: 100vw;
+  height: 100vh;
+  
 }
 
-h1 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
+.h1Home {
+  font-size: 5em;
+  
   color: #333;
+}
+.idk{
+  height: 100%;
+  display:flex;
+  flex-direction: column;
+  align-items: start;
 }
 
 .titl {
-  width: 200px;
-  height: 200px;
-  margin-bottom: 20px;
+  height: 60vh;
+  width: auto;
   transition: transform 0.3s ease-in-out;
 }
 
@@ -23,24 +30,38 @@ h1 {
   transform: rotate(360deg);
 }
 
-a {
-  display: block;
-  margin: 10px 0;
+.homeLinks {
   padding: 10px 20px;
-  font-size: 1.2em;
-  color: #fff;
-  background-color: #007bff;
-  text-decoration: none;
-  border-radius: 5px;
+  font-size: 3em;
+  font-weight: 700;
+  color: #1a73e8;
+  background-color: #fff;
+  border: 3px solid #1a73e8;
+  border-radius: 17px;
+  cursor: pointer;
+  margin: 10px 0;
   transition: background-color 0.3s ease;
+  text-decoration: none;
+  width: 60%;
+  
+}
+.homeLinks:hover {
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 2px 6px 2px rgba(60, 64, 67, 0.15);
+}
+.homeLinksContainer{
+  display: flex;
+  flex-direction: column;
+  align-self: end;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  flex: 1;
+  margin-bottom:30vh;
 }
 
-a:hover {
-  background-color: #0056b3;
-}
 
 @media (max-width: 600px) {
-  h1 {
+  .h1Home {
     font-size: 2em;
   }
 
@@ -48,9 +69,25 @@ a:hover {
     width: 150px;
     height: 150px;
   }
-
-  a {
+  .idk{
+    align-items: center;
+  }
+  .homeLinks {
     font-size: 1em;
     padding: 8px 16px;
+    align-self:center;
+  }
+  .homeLinksContainer{
+    margin-top: 10px;
+    margin-bottom: 10vh;
+    align-self: center;
+    flex-direction: row;
+  }
+  .homeContainer{
+    flex-direction: column;
+  }
+  .viewSimulationHeader{
+    flex-direction:row;
+    width: 100vw;
   }
 }
