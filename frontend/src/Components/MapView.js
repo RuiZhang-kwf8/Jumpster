@@ -83,7 +83,7 @@ function MapView({ kmlFileName, kmlLegendFileName, tiffFileName, discrete, latit
         center={[latitude, longitude]}
       > 
         <div className="legendContainer">
-        {kmlLegendFileName && (<img src={`kmlLegend/${kmlLegendFileName}`} alt="legend" className = "legend" />)}
+        {kmlLegendFileName && (<img key ={kmlLegendFileName} src={`kmlLegend/${kmlLegendFileName}`} alt="legend" className = "legend" />)}
         {tiffFileName && <TiffLegend discrete={discrete} maxValue= {maxValue} setMaxValue={setMaxValue}/>}
         </div>
 

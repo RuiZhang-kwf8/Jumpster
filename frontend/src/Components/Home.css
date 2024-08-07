@@ -60,7 +60,7 @@
 }
 
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .h1Home {
     font-size: 2em;
   }
@@ -86,8 +86,5 @@
   .homeContainer{
     flex-direction: column;
   }
-  .viewSimulationHeader{
-    flex-direction:row;
-    width: 100vw;
-  }
+
 }
