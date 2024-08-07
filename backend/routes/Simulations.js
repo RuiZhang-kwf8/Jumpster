@@ -23,38 +23,47 @@ function listAllFiles(directoryPath) {
         });
     });
 }
-
-function listKmlFiles(directoryPath) {
+function deleteDateTimeAndNomads(directoryPath) {
     return new Promise((resolve, reject) => {
         fs.readdir(directoryPath, (err, files) => {
             if (err) {
                 return reject(err);
             }
-            const kmlFiles = files.filter(file => file.startsWith('output') && path.extname(file) === '.kml');
-            resolve(kmlFiles);
+
+            const dateTimeFiles = files.filter((file) => 
+                file.startsWith('NOMADS') || file.endsWith('date_time.bmp')
+            );
+    
+
+            if (dateTimeFiles.length === 0) {
+                return resolve('No files to delete.');
+            }
+
+            let deletePromises = dateTimeFiles.map((file) => {
+                return new Promise((res, rej) => {
+                    fs.unlink(path.join(directoryPath, file), (err) => {
+                        if (err) {
+                            return rej(err);
+                        }
+                        res();
+                    });
+                });
+            });
+
+            Promise.all(deletePromises)
+                .then(() => resolve(`${dateTimeFiles.length} file(s) deleted.`))
+                .catch(reject);
         });
     });
 }
-
-function listKmzFiles(directoryPath) {
+function listExtFiles(directoryPath, ext) {
     return new Promise((resolve, reject) => {
         fs.readdir(directoryPath, (err, files) => {
             if (err) {
                 return reject(err);
             }
-            const kmzFiles = files.filter(file => path.extname(file) === '.kmz');
-            resolve(kmzFiles);
-        });
-    });
-}
-function listPdfFiles(directoryPath) {
-    return new Promise((resolve, reject) => {
-        fs.readdir(directoryPath, (err, files) => {
-            if (err) {
-                return reject(err);
-            }
-            const pdfFiles = files.filter(file => path.extname(file) === '.pdf');
-            resolve(pdfFiles);
+            const extFiles = files.filter((file) => path.extname(file) === ext);
+            resolve(extFiles);
         });
     });
 }
@@ -103,10 +112,25 @@ function moveFile(filePath, newName, newDirectoryPath) {
 }
 
 
-router.get('/', async (req, res) => {
-    const simulations = await Simulations.find().select({ name: 1, latitude: 1, longitude: 1 , outputKmlFileName: 1, outputPdfFileName: 1});
 
-    res.json(simulations);
+router.get('/', async (req, res) => {
+    try {
+        const simulations = await Simulations.find()
+            .select({ 
+                name: 1, 
+                latitude: 1, 
+                longitude: 1, 
+                outputKmlFileName: 1, 
+                outputPdfFileName: 1, 
+                outputTiffFileName: 1, 
+                outputKmlLegendFileName: 1, 
+                time: 1 
+            })
+            .sort({ time: -1 }); // Sort by `time` field in descending order (-1)
+        res.json(simulations);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching simulations' });
+    }
 });
 
 router.post('/', async (req, res) => {
@@ -116,10 +140,10 @@ router.post('/', async (req, res) => {
         const fetch = (await import('node-fetch')).default;
 
         const path = (await import('path')).default;
-        const northbound = Number(req.body.latitude) + .07;
-        const southbound = Number(req.body.latitude) - .07;
-        const eastbound = Number(req.body.longitude) + .07;
-        const westbound = Number(req.body.longitude) - .07;
+        const northbound = Number(req.body.latitude) + .03;
+        const southbound = Number(req.body.latitude) - .03;
+        const eastbound = Number(req.body.longitude) + .03;
+        const westbound = Number(req.body.longitude) - .03;
 
 
 
@@ -132,12 +156,12 @@ router.post('/', async (req, res) => {
         const diffInMilliseconds = currentDayjsTime.diff(req.body.time);
 
         const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
-
-        const command = `cd ~/Firelab/Windninja/build/src/fetch_dem && ./fetch_dem --bbox ${northbound} ${eastbound} ${southbound} ${westbound} --src gmted output.tif`;      
+        //cd ~/Firelab/Windninja/build/src/fetch_dem && ./fetch_dem --bbox ${northbound} ${eastbound} ${southbound} ${westbound} --src gmted output.tif
+        const command = `cd ~/wind/build/src/fetch_dem && ./fetch_dem --bbox ${northbound} ${eastbound} ${southbound} ${westbound} --src gmted output.tif`;      
         console.log("command: ", command); 
         await execPromise(command);
-
-        const command2 = `WindNinja_cli ~/Jumpster/Jumpster/backend/routes/exampleElevfile.cfg --elevation_file ~/Firelab/Windninja/build/src/fetch_dem/output.tif --output_path ~/Jumpster/Jumpster/backend/outputs`;        
+        //WindNinja_cli ~/Jumpster/Jumpster/backend/routes/exampleElevfile.cfg --elevation_file ~/Firelab/Windninja/build/src/fetch_dem/output.tif --output_path ~/Jumpster/Jumpster/backend/outputs
+        const command2 = `WindNinja_cli ~/JumpsterBackend/backend/routes/exampleElevfile.cfg --elevation_file ~/wind/build/src/fetch_dem/output.tif --output_path ~/JumpsterBackend/backend/outputs`;        
         console.log("command: ", command2); 
         await execPromise(command2);
 
@@ -145,7 +169,7 @@ router.post('/', async (req, res) => {
         const directoryPath = path.resolve('./outputs');
         const outputDirectory = './kmls';
 
-        const kmzFiles = await listKmzFiles(directoryPath);
+        const kmzFiles = await listExtFiles(directoryPath, '.kmz');
         console.log('KMZ Files:', kmzFiles);
 
         for (const kmzFile of kmzFiles) {
@@ -156,20 +180,35 @@ router.post('/', async (req, res) => {
             console.log(`Deleted ${kmzFile}`);
         }  
 
-        const kmlFiles = await listKmlFiles(outputDirectory);
+
+        
+        await deleteDateTimeAndNomads('./kmls');
+        const kmlFiles = await listExtFiles(outputDirectory, '.kml');
         console.log('KML Files:', kmlFiles);
+        console.log('diff', diffInHours);
         const kmlFileName="" + kmlFiles[Math.abs(diffInHours)];
         const kmlFileNameNew = req.body.name + req.body.latitude + req.body.longitude +".kml";
-        await moveFile(path.join(outputDirectory , kmlFileName), kmlFileNameNew, '../frontend/public/kml');
-    
+        await moveFile(path.join(outputDirectory , kmlFileName), kmlFileNameNew, '/var/www/html/jumpster/kml');
 
-        const pdfFiles = await listPdfFiles(directoryPath);
+        const bmpFiles = await listExtFiles(outputDirectory, '.bmp');
+        console.log('BMP Files:', bmpFiles);
+        const bmpFileName="" + bmpFiles[Math.abs(diffInHours)];
+        const bmpFileNameNew = req.body.name + req.body.latitude + req.body.longitude +".bmp";
+        await moveFile(path.join(outputDirectory , bmpFileName), bmpFileNameNew, '/var/www/html/jumpster/kmlLegend');
+
+        const pdfFiles = await listExtFiles(directoryPath, '.pdf');
         console.log('PDF Files:', pdfFiles);
         const pdfFileName="" + pdfFiles[Math.abs(diffInHours)];
         const pdfFileNameNew = req.body.name + req.body.latitude + req.body.longitude +".pdf";
-        for (const pdfFile of pdfFiles) {
-            await moveFile(path.join(directoryPath, pdfFile),pdfFileNameNew, '../frontend/public/pdf');
-        }
+        await moveFile(path.join(directoryPath, pdfFileName),pdfFileNameNew, '/var/www/html/jumpster/pdf');
+
+
+        const tiffFiles = await listExtFiles(directoryPath, '.tif');
+        console.log('Tiff Files:', tiffFiles);
+        const tiffFileName="" + tiffFiles[0];
+        const tiffFileNameNew = req.body.name + req.body.latitude + req.body.longitude +".tif";
+        await moveFile(path.join(directoryPath, tiffFileName),tiffFileNameNew, '/var/www/html/jumpster/tiff');
+
 
         const allExtraFiles = await listAllFiles(outputDirectory);
         console.log('All Extra Files:', allExtraFiles);
@@ -185,7 +224,9 @@ router.post('/', async (req, res) => {
             longitude: req.body.longitude,
             time: new Date(req.body.time),
             outputKmlFileName: kmlFileNameNew,
-            outputPdfFileName: pdfFileNameNew
+            outputPdfFileName: pdfFileNameNew,
+            outputTiffFileName: tiffFileNameNew,
+            outputKmlLegendFileName: bmpFileNameNew
         });
         
         await newSimulation.save();
