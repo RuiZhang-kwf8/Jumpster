@@ -11,6 +11,7 @@ export default function ViewSimulations( ) {
     const [kml, setKml] = useState("");
     const [tiff, setTiff] = useState("");
     const [kmlLegend, setkmlLegend] = useState("");
+    const [coords, setCoords] = useState("");
     const [latitude, setLatitude] = useState(46.8721);
     const [longitude, setLongitude] = useState(-113.9940);
     const [searchTerm, setSearchTerm] = useState("");
@@ -72,9 +73,9 @@ export default function ViewSimulations( ) {
 
     return (
         <div className='viewSimulationsContainer'>
-            <Sidebar filteredData={filteredData} setKml={setKml} setkmlLegend={setkmlLegend} setLatitude={setLatitude} setLongitude={setLongitude} setTiff={setTiff} handleDownload={handleDownload} handleClick={handleClick} handleSearch={handleSearch} searchTerm = {searchTerm} setDiscrete={setDiscrete} discrete={discrete}/>
+            <Sidebar filteredData={filteredData} setKml={setKml} setkmlLegend={setkmlLegend} setLatitude={setLatitude} setLongitude={setLongitude} setTiff={setTiff} handleDownload={handleDownload} handleClick={handleClick} handleSearch={handleSearch} searchTerm = {searchTerm} setDiscrete={setDiscrete} discrete={discrete} setCoords={setCoords}/>
             
-            <MapView key={discrete + maxValue + tiff +kml} kmlFileName={kml} kmlLegendFileName = {kmlLegend} tiffFileName={tiff} latitude={latitude} longitude={longitude} discrete ={discrete} maxValue = {maxValue} setMaxValue= {setMaxValue}/>
+            <MapView key={discrete + maxValue + tiff +kml+coords} kmlFileName={kml} kmlLegendFileName = {kmlLegend} tiffFileName={tiff} latitude={latitude} longitude={longitude} discrete ={discrete} maxValue = {maxValue} setMaxValue= {setMaxValue} coords={coords}/>
         </div>
     );
 }

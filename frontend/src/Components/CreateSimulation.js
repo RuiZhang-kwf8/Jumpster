@@ -17,12 +17,26 @@ export default function CreateSimulation() {
   const [time, setTime] = useState(dayjs());
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [coordsString, setCoordsString] = useState('');
+  function ConvertDMSToDD(degrees, minutes) {
+    if (degrees < 0) {
+      minutes = minutes *-1;
+  } // Don't do anything for N or E
+    var dd = degrees + minutes/60 ;
 
+
+    return dd;
+  }
   const handleSubmit = async (event) => {
+    if (!name || !latitude || !longitude) {
+      alert("Please fill out all fields");
+      return;
+    }
     event.preventDefault();
     setLoading(true);
     const simulationData = {
       name: name,
+      coords: coordsString,
       latitude: latitude,
       longitude: longitude,
       time: time.format(), // Convert to ISO string format
@@ -48,7 +62,25 @@ export default function CreateSimulation() {
     xhr.send(JSON.stringify(simulationData));
     
     };
+    const setCoords = (e) => {
+      let input = e.target.value;
+      if (!input) {
+        return;
+      }
+      setCoordsString(input);
+      let parts = input.match(/-?\d+(\.\d+)?/g);
 
+      if (parts.length === 4) {
+        let lat = ConvertDMSToDD(parseInt(parts[0]), parseFloat(parts[1]));
+        let lon = ConvertDMSToDD(parseInt(parts[2]), parseFloat(parts[3]));
+        lat = parseFloat(lat.toFixed(10));
+        lon = parseFloat(lon.toFixed(10));
+        setLatitude(lat);
+        setLongitude(lon);
+        
+        console.log(parts);
+      }
+    }
 
   return (
     <div className="createSimulationContainer">
@@ -62,20 +94,13 @@ export default function CreateSimulation() {
         </label>
         <label className = "createSimLabel">
           <div className = "latLongLabel">
-          Latitude: <span className="exampleLatLong">(ex. 46.948856)</span>
+          Coordinates: <span className="exampleLatLong">(ex. 36 57.5/-110 4.4)</span>
           </div>
           
           
-          <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} className="createSimInput"/>
+          <input type="text" onChange={(e) => setCoords(e)} className="createSimInput"/>
         </label>
-        <label className = "createSimLabel">
-          <div className = "latLongLabel">
-          Longitude: <span className="exampleLatLong">(ex. -112.625774)</span>
-          </div>
-          
-          
-          <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} className="createSimInput"/>
-        </label>
+
 
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DesktopDateTimePicker

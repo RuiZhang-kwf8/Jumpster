@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Sidebar.css"; // Import your custom CSS for styling
 import { Link } from 'react-router-dom';
 
-const Sidebar = ({ filteredData, setKml, setkmlLegend, setLatitude, setLongitude, setTiff, setDiscrete, handleDownload, handleClick, handleSearch, searchTerm, discrete }) => {
+const Sidebar = ({ filteredData, setKml, setkmlLegend, setLatitude, setLongitude, setTiff, setDiscrete, handleDownload, handleClick, handleSearch, searchTerm, discrete,  setCoords }) => {
   const [isOpen, setIsOpen] = useState(true);
   useEffect(() => {
     handleClick();
@@ -65,8 +65,7 @@ const Sidebar = ({ filteredData, setKml, setkmlLegend, setLatitude, setLongitude
               <div key={item.id} className="card">
                 <div className="cardHeader">                 
                   <div className ="simName">{item.name}</div>
-                  <h2 style={{ fontSize: '.8rem' }}>Latitude: {item.latitude}</h2>
-                  <h2 style={{ fontSize: '.8rem' }}>Longitude: {item.longitude}</h2>
+                  <h2 style={{ fontSize: '.8rem' }}>Coordinates: {item.coords}</h2>
                   <h2 style={{ fontSize: '.8rem' }}>Date: {convertUnixTimestampToDate(item.time)}</h2> 
                 </div>
               <div className = "cardButtons">
@@ -75,9 +74,11 @@ const Sidebar = ({ filteredData, setKml, setkmlLegend, setLatitude, setLongitude
                     onClick={() => {              
                       setKml(item.outputKmlFileName);
                       setkmlLegend(item.outputKmlLegendFileName);
+                      setCoords(item.coords);
                       setLatitude(item.latitude);
                       setLongitude(item.longitude);
                       setTiff("");
+                      console.log(item.coords);
                     }}
                     className="cardButton"
                   >
@@ -88,6 +89,7 @@ const Sidebar = ({ filteredData, setKml, setkmlLegend, setLatitude, setLongitude
                       setTiff(item.outputTiffFileName);
                       setLatitude(item.latitude);
                       setLongitude(item.longitude);
+                      setCoords(item.coords);
                       setKml("");
                       setkmlLegend("");
                     }}
@@ -100,6 +102,7 @@ const Sidebar = ({ filteredData, setKml, setkmlLegend, setLatitude, setLongitude
                       setTiff(item.outputTiffFileName);
                       setLatitude(item.latitude);
                       setLongitude(item.longitude);
+                      setCoords(item.coords);
                       setKml(item.outputKmlFileName);
                       setkmlLegend(item.outputKmlLegendFileName);
                     }}
