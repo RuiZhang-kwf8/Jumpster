@@ -54,12 +54,10 @@ function MapView({ kmlFileName, kmlLegendFileName, tiffFileName, discrete, latit
   const getColor = (nir) => {
     if (nir === 0) return 'rgba(0,0,0,0)'; // Transparent for 0 values
     const value = nir / maxValue;
-    if (value <= 1/3) {
-      return interpolateColor(value, 0, 1/3, [0, 100, 255], [0, 255, 0]);
-    } else if (value<=2/3) {
-      return interpolateColor(value, 1/3, 2/3, [0, 255, 0], [255, 255, 0]);
-    } else if (value<=1){
-      return interpolateColor(value, 2/3, 1, [255, 255, 0], [255, 0, 255]);
+    if (value <= 1/2) {
+      return interpolateColor(value, 0, 1/2, [0, 255, 0], [255, 255, 0]);
+    } else if (value<=1) {
+      return interpolateColor(value, 1/2, 1, [255, 255, 0], [255, 0, 0]);
     }else{
       return interpolateColor(value, 1, 999999999, [255, 0, 0], [255, 0, 0]);
     }

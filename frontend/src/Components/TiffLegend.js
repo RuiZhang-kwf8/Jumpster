@@ -10,7 +10,7 @@ const TiffLegend = ({ discrete , maxValue, setMaxValue}) => {
     };
     useEffect(() => {
         
-        const values = [0, Math.round(maxValue / 3 *10)/10, Math.round(maxValue*2 / 3 *10)/10, maxValue];
+        const values = [0, Math.round(maxValue / 2 *10)/10, maxValue];
         setLegendValues(values);
     }, [maxValue]);
 
@@ -33,18 +33,14 @@ const TiffLegend = ({ discrete , maxValue, setMaxValue}) => {
             <div className="legendList">
                 <div className="legendItem" >
                     <div className = "color" style={{ backgroundColor: 'rgba(255,0,0,1)' }}></div>
-                    <div className = "legendText">{legendValues[3]} + </div>
+                    <div className = "legendText">{legendValues[2]} + </div>
                 </div> 
                 <div className="legendItem" >
                     <div className = "color" style={{ backgroundColor: 'rgba(255,255,0,1)' }}></div>
-                    <div className = "legendText">{legendValues[2]} - {legendValues[3]}</div>
-                </div>
-                <div className="legendItem" >
-                    <div className = "color" style={{ backgroundColor: 'rgba(0,255,0,1)' }}></div>
                     <div className = "legendText">{legendValues[1]} - {legendValues[2]}</div>
                 </div>
                 <div className="legendItem" >
-                    <div className = "color" style={{ backgroundColor: 'rgba(0,100,255,1)' }}></div>
+                    <div className = "color" style={{ backgroundColor: 'rgba(0,255,0,1)' }}></div>
                     <div className = "legendText">{legendValues[0]} - {legendValues[1]}</div>
                 </div>
             </div>
