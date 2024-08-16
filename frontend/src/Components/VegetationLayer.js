@@ -12,7 +12,7 @@ const VegetationLayer = (props)=> {
         return;
         }
       const vegetationLayer = L.esri.featureLayer({
-        url: 'https://services1.arcgis.com/Ko5rxt00spOfjMqj/arcgis/rest/services/Vegetation_Public/FeatureServer/0'
+        url: 'https://naip.imagery1.arcgis.com/arcgis/rest/services/NAIP/ImageServer'
       });
   
       vegetationLayer.addTo(map); // Add the layer to the map

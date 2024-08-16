@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, LayersControl, ImageOverlay} from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, LayersControl, ImageOverlay, LayerGroup} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import ReactLeafletKml from 'react-leaflet-kml';
 import L from 'leaflet';
@@ -89,34 +89,39 @@ function MapView({ kmlFileName, kmlLegendFileName, tiffFileName, discrete, latit
   return (
     <div className="totalContainer">
       <MapContainer
-        key = {tiffFileName}
         style={{ height: '100vh', width: '100%', position: "relative" }}
         zoom={17}
         preferCanvas={true} 
         center={[latitude, longitude]}
       > 
         
-        <LayersControl position="bottomright">
-          <div className="legendContainer">
-          {kmlLegendFileName && (<img key ={kmlLegendFileName} src={`kmlLegend/${kmlLegendFileName}`} alt="legend" className = "legend" />)}
-          {tiffFileName && <TiffLegend discrete={discrete} maxValue= {maxValue} setMaxValue={setMaxValue}/>}
-          </div>
+          <LayersControl position="bottomright">
+            <div className="legendContainer">
+            {kmlLegendFileName && (<img key ={kmlLegendFileName} src={`kmlLegend/${kmlLegendFileName}`} alt="legend" className = "legend" />)}
+            {tiffFileName && <TiffLegend discrete={discrete} maxValue= {maxValue} setMaxValue={setMaxValue}/>}
+            </div>
 
-          {kmlData && <ReactLeafletKml kml={kmlData} />}
+            {kmlData && <ReactLeafletKml kml={kmlData} />}
           <LayersControl.BaseLayer checked name="OpenStreetMap">
+            <LayerGroup>
             <TileLayer
               url="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoibmlja25jNDEwIiwiYSI6ImNseGF1dGV1bDEzdDMya29pcnFjanQwYWMifQ.TOWeP4Hm_8GbeHQYt-KlUQ"
               updateWhenZooming={false}
               updateWhenIdle={true}
             ></TileLayer>
-            
+              {tiffFileName && (                
+              <GeoTiffLayer
+              url={`tiff/${tiffFileName}`} 
+              options={options} 
+              />)}
+            </LayerGroup>
             
           </LayersControl.BaseLayer>
           <LayersControl.BaseLayer name="NAIP Imagery">
             <BasemapLayer name="NationalGeographic" />
             
           </LayersControl.BaseLayer>
-          {longitude && <LayersControl.Overlay name="Vegetation">
+          {longitude && <LayersControl.Overlay name="High Res Vegetation (1 min load time)">
           {/* <FeatureLayer
             url="https://services1.arcgis.com/Ko5rxt00spOfjMqj/arcgis/rest/services/Vegetation_Public/FeatureServer/0"
             updateWhenZooming={false}
@@ -152,19 +157,16 @@ function MapView({ kmlFileName, kmlLegendFileName, tiffFileName, discrete, latit
           /> */}
             <ImageOverlay url ={`https://naip.imagery1.arcgis.com/arcgis/rest/services/NAIP/ImageServer/exportImage/?bbox=${longitude-.03},${latitude-.03},${longitude+.03},${latitude+.03}&transparent=false&f=image&bboxSR=4326&size=&imageSR=4326&pixelType=U8&noData=&noDataInterpretation=esriNoDataMatchAny&interpolation=+RSP_BilinearInterpolation&compression=JPEG&compressionQuality=75&bandIds=&sliceId=&mosaicRule=&renderingRule=&adjustAspectRatio=true&validateExtent=true&lercVersion=1`}
             bounds = {[[latitude-.03,longitude-.03],[latitude+.03,longitude+.03]]}
-
             />
           </LayersControl.Overlay>}
-          
-          {tiffFileName && (
-            <LayersControl.Overlay name="Turbulence">
-              <GeoTiffLayer 
-                key={tiffFileName} 
-                url={`tiff/${tiffFileName}`} 
-                options={options} 
+          <LayersControl.Overlay name="Low res Vegetation">
+            <ImageOverlay url ={`/vegetationUS.png`}
+              bounds = {[[21.7,-124.8313538],[51.3,-66.851642]]}
               />
-            </LayersControl.Overlay>
-          )}
+          </LayersControl.Overlay>
+          
+
+            
           
 
           <Marker position={[latitude, longitude]}>
